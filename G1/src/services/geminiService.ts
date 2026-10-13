@@ -86,7 +86,7 @@ async function callGemma(prompt: string, maxTokens = 2000): Promise<string> {
   return data.candidates[0]?.content?.parts[0]?.text || '';
 }
 
-async function callGemmaViaOpenRouter(prompt: string, maxTokens = 8192): Promise<string> {
+async function callGemmaViaOpenRouter(prompt: string, maxTokens = 1000): Promise<string> {
   const model = toOpenRouterModel(GEMMA_MODEL);
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
@@ -99,8 +99,9 @@ async function callGemmaViaOpenRouter(prompt: string, maxTokens = 8192): Promise
     body: JSON.stringify({
       model,
       messages: [{ role: 'user', content: prompt }],
-      temperature: 0.7,
+      temperature: 0.3,
       max_tokens: maxTokens,
+      provider: { sort: 'throughput' },
     }),
   });
 
@@ -116,25 +117,33 @@ async function callGemmaViaOpenRouter(prompt: string, maxTokens = 8192): Promise
   throw new Error(`Gemma 4 via OpenRouter empty response (model=${model})`);
 }
 
+// Fast cache: repeat generations (same model+context) resolve instantly.
+const theoryCache = new Map<string, string>();
+function cacheGet(key: string): string | null {
+  if (theoryCache.has(key)) return theoryCache.get(key)!;
+  try {
+    const v = localStorage.getItem(`galactic-theory:${key}`);
+    if (v) { theoryCache.set(key, v); return v; }
+  } catch { /* ignore */ }
+  return null;
+}
+function cacheSet(key: string, value: string) {
+  theoryCache.set(key, value);
+  try { localStorage.setItem(`galactic-theory:${key}`, value); } catch { /* ignore */ }
+}
+
 export async function generateTheoryContent(modelName: string, context: string): Promise<string> {
-  const prompt = `You are powered by Gemma 4 (${GEMMA_MODEL}), Google DeepMind open model.
-Generate a concise theory section (under 350 words) for the ${modelName} machine learning model. Include:
+  const cacheKey = `${GEMMA_MODEL}|${modelName}|${context}`.slice(0, 120);
+  const hit = cacheGet(cacheKey);
+  if (hit) return hit;
 
-1. **Mathematical Foundation**: Core equations and principles
-2. **Algorithm Explanation**: How the model works step-by-step
-3. **Key Parameters**: Important hyperparameters and their effects
-4. **Use Cases**: When to use this model vs alternatives
-5. **Advantages**: Strengths of this approach
-6. **Limitations**: Weaknesses and considerations
-7. **Best Practices**: Tips for optimal performance
-
-Context: ${context}
-
-Format the response in clear markdown with tables where appropriate. Be concise but comprehensive.`;
+  const prompt = `In under 200 words, bullet-only markdown theory for ${modelName} (${context}): formula (1 line), how it works (3 bullets), key params (3 bullets), when to use (1 line), 1 advantage, 1 limitation, 1 tip. No tables. Powered by Gemma 4.`;
 
   try {
-    const text = await callGemma(prompt, 1800);
-    return text || 'Theory generation failed';
+    const text = await callGemma(prompt, 900);
+    const out = text || 'Theory generation failed';
+    cacheSet(cacheKey, out);
+    return out;
   } catch (error) {
     console.error('Error generating theory with Gemma 4:', error);
     return `# ${modelName} Theory\n\nError generating theory content. Using default template.`;
@@ -142,21 +151,17 @@ Format the response in clear markdown with tables where appropriate. Be concise 
 }
 
 export async function generateCheatSheet(category: string): Promise<string> {
-  const prompt = `You are powered by Gemma 4 (${GEMMA_MODEL}).
-Create a concise cheat sheet table (under 300 words) for ${category} in machine learning.
+  const cacheKey = `${GEMMA_MODEL}|cheat|${category}`.slice(0, 120);
+  const hit = cacheGet(cacheKey);
+  if (hit) return hit;
 
-Include:
-- Technique names
-- When to use
-- Key parameters
-- Code snippets (Python)
-- Common pitfalls
-
-Format as a markdown table that is easy to read and reference.`;
+  const prompt = `Under 180 words, compact markdown table cheat sheet for ${category}: columns Technique|When|Key param|Pitfall. 6 rows max. Powered by Gemma 4.`;
 
   try {
-    const text = await callGemma(prompt, 1500);
-    return text || 'Cheat sheet generation failed';
+    const text = await callGemma(prompt, 800);
+    const out = text || 'Cheat sheet generation failed';
+    cacheSet(cacheKey, out);
+    return out;
   } catch (error) {
     console.error('Error generating cheat sheet with Gemma 4:', error);
     return `Error generating ${category} cheat sheet.`;

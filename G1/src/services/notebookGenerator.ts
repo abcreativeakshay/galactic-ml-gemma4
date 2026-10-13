@@ -106,6 +106,12 @@ function generateTechniqueCode(technique: string): string[] | null {
 export async function generateNotebook(config: NotebookConfig): Promise<any> {
   const cells: NotebookCell[] = [];
 
+  // Kick off ALL fixed AI blocks upfront in parallel (saves 2-3 sequential round trips).
+  const edaTheoryP = generateTheoryContent('Exploratory Data Analysis', config.problemType);
+  const preprocessTheoryP = generateTheoryContent('Data Preprocessing', config.problemType);
+  const tuningTheoryP = generateTheoryContent('Hyperparameter Tuning', config.problemType);
+  const cheatSheetP = generateCheatSheet('Hyperparameter Tuning Strategies');
+
   cells.push(createMarkdownCell([
     `# 🤖 Machine Learning Pipeline: ${config.datasetName}\n`,
     '\n',
@@ -202,7 +208,7 @@ export async function generateNotebook(config: NotebookConfig): Promise<any> {
     'print(f"Number of duplicate rows: {duplicates} ({100*duplicates/len(df):.2f}%)")\n'
   ]));
 
-  const theoryMD = await generateTheoryContent('Exploratory Data Analysis', config.problemType);
+  const theoryMD = await edaTheoryP;
   cells.push(createMarkdownCell([
     '## 📈 3. Theory: Exploratory Data Analysis\n',
     '\n',
@@ -249,7 +255,7 @@ export async function generateNotebook(config: NotebookConfig): Promise<any> {
     'plt.show()\n'
   ]));
 
-  const preprocessTheory = await generateTheoryContent('Data Preprocessing', config.problemType);
+  const preprocessTheory = await preprocessTheoryP;
   cells.push(createMarkdownCell([
     '## 🛠️ 4. Theory: Data Preprocessing\n',
     '\n',
@@ -379,10 +385,7 @@ export async function generateNotebook(config: NotebookConfig): Promise<any> {
     ]));
   }
 
-  const [tuningTheory, cheatSheet] = await Promise.all([
-    generateTheoryContent('Hyperparameter Tuning', config.problemType),
-    generateCheatSheet('Hyperparameter Tuning Strategies'),
-  ]);
+  const [tuningTheory, cheatSheet] = await Promise.all([tuningTheoryP, cheatSheetP]);
   cells.push(createMarkdownCell([
     '## 🎛️ 7. Theory: Hyperparameter Tuning\n',
     '\n',
