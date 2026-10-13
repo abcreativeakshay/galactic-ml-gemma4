@@ -8,7 +8,7 @@
 ### 1️⃣ Notebook Forge (G1) — "Create" (60s)
 - **Say:** "I upload any CSV. Gemma 4 detects classification vs regression, suggests target + models, then writes me a full 18-cell production notebook — EDA, preprocessing, GridSearchCV tuning, comparison charts, deployment code."
 - **Show:** Upload CSV → AI analysis box → select 3 models → Generate → scroll theory + cheat sheet → Download `.ipynb`.
-- **Jury line:** "Old version used closed `gemini-pro`. Now `gemma-4-12b-it` — open, 256K context, same API."
+- **Jury line:** "Old version used closed `gemini-pro`. Now `gemma-4-26b-a4b-it` — open, 256K context, same API."
 
 ### 2️⃣ Dracarys 3D (G2) — "See" (60s)
 - **Say:** "ML is invisible. Here I type 'ResNet' and Gemma converts words to 3D JSON, rendered live. I rotate, tweak layers, ask AI why loss spikes."
@@ -34,7 +34,7 @@
 A: Open (can fine-tune/host), 256K context for long docs, cheaper inference, same Gemini API so 1-line switch. Plus story: open science fits education.
 
 **Q: What did you actually change?**
-A: 4 service files + 1 constants + 3 vite configs + UI labels. Model string `gemini-*` → `gemma-4-12b-it`, REST URL updated, max tokens 8K→16K for 100-Q, prompts now say "powered by Gemma 4". See `GEMMA-4-MIGRATION.md`.
+A: 4 service files + 1 constants + 3 vite configs + UI labels. Model string `gemini-*` → `gemma-4-26b-a4b-it`, REST URL updated, max tokens 8K→16K for 100-Q, prompts now say "powered by Gemma 4". See `GEMMA-4-MIGRATION.md`.
 
 **Q: How does 3D help learning?**
 A: Dual coding theory — visual + verbal. Seeing centroids move / signals flow builds intuition faster than equations alone. Plus AI explains what you see.

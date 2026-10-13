@@ -1,22 +1,25 @@
 // ============================================================
 // GALACTIC ML — Gemma 4 Service (G1: Notebook Forge)
-// Model: gemma-4-12b-it (Unified, 256K context, multimodal)
-// Family alternatives:
-//  - gemma-4-31b-it     (dense, max quality)
-//  - gemma-4-26b-a4b-it (MoE, efficient reasoning)
-//  - gemma-4-e4b-it / e2b-it (edge/mobile)
-// Via Gemini API (generativelanguage.googleapis.com) — same key works.
+// Default: gemma-4-26b-a4b-it (MoE, 256K context — SUPPORTED on Gemini API)
+// Docs: https://ai.google.dev/gemma/docs/core/gemma_on_gemini_api
+// API supports ONLY: gemma-4-26b-a4b-it, gemma-4-31b-it
+//  - gemma-4-12b-it is HF/local-only (404 on Gemini API) — do NOT use as default
+//  - gemma-4-31b-it (dense, max quality, API-supported alt)
+// Via Gemini API (generativelanguage.googleapis.com) — needs fresh key.
 // ============================================================
 
 export const GEMMA_MODEL =
   (import.meta as any)?.env?.VITE_GEMMA_MODEL ||
   (import.meta as any)?.env?.VITE_GEMINI_MODEL ||
-  'gemma-4-12b-it';
+  'gemma-4-26b-a4b-it';
 
 const GEMMA_API_KEY =
   (import.meta as any)?.env?.VITE_GEMMA_API_KEY ||
   (import.meta as any)?.env?.VITE_GEMINI_API_KEY ||
-  '***REMOVED***';
+  '';
+
+// NOTE: old hardcoded key AIzaSyAcK2... was revoked by Google (403 leaked).
+// Set VITE_GEMMA_API_KEY in G1/.env from https://aistudio.google.com/
 
 const GEMMA_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMMA_MODEL}:generateContent`;
 
@@ -31,6 +34,11 @@ interface GemmaResponse {
 }
 
 async function callGemma(prompt: string): Promise<string> {
+  if (!GEMMA_API_KEY) {
+    throw new Error(
+      `Missing VITE_GEMMA_API_KEY. Create G1/.env with VITE_GEMMA_API_KEY=... from https://aistudio.google.com/ (model=${GEMMA_MODEL})`
+    );
+  }
   const response = await fetch(`${GEMMA_API_URL}?key=${GEMMA_API_KEY}`, {
     method: 'POST',
     headers: {
@@ -50,7 +58,10 @@ async function callGemma(prompt: string): Promise<string> {
   });
 
   if (!response.ok) {
-    throw new Error(`Gemma 4 API error: ${response.statusText} (model=${GEMMA_MODEL})`);
+    let body = '';
+    try { body = await response.text(); } catch { /* ignore */ }
+    // 404 = wrong model ID (e.g. 12b not on Gemini API). 403 leaked = revoked key. 400 = bad key.
+    throw new Error(`Gemma 4 API error ${response.status} ${response.statusText} (model=${GEMMA_MODEL}) :: ${body.slice(0, 500)}`);
   }
 
   const data: GemmaResponse = await response.json();

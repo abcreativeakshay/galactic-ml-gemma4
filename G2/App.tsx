@@ -317,7 +317,7 @@ const TermsModal = ({ onClose }: { onClose: () => void }) => (
                 <div className="space-y-2">
                     <h3 className="text-xs font-bold text-cyber-accent uppercase tracking-wider">2. Generative AI Disclaimer</h3>
                     <p className="text-xs text-gray-400 font-mono leading-relaxed">
-                        This platform integrates Gemma 4 (gemma-4-12b-it, Google DeepMind open model) APIs for architectural synthesis and code generation. Outputs are probabilistic in nature. Dracarys Systems does not guarantee the convergence or production-readiness of generated models in real-world training scenarios. Always verify generated PyTorch/TensorFlow code before deployment.
+                        This platform integrates Gemma 4 (gemma-4-26b-a4b-it, Google DeepMind open model) APIs for architectural synthesis and code generation. Outputs are probabilistic in nature. Dracarys Systems does not guarantee the convergence or production-readiness of generated models in real-world training scenarios. Always verify generated PyTorch/TensorFlow code before deployment.
                     </p>
                 </div>
 

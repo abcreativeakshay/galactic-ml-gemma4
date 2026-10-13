@@ -1,6 +1,6 @@
 # 🛰️ Modules — How to Run Each (Gemma 4 Ready)
 
-All modules use `GEMMA_MODEL=gemma-4-12b-it` by default. Override with env, no code change.
+All modules use `GEMMA_MODEL=gemma-4-26b-a4b-it` by default. Override with env, no code change.
 
 ## 01 — Notebook Forge (`../G1`)
 **Story:** Upload CSV → production notebook
@@ -12,7 +12,7 @@ npm install && npm run dev            # :5173
 pip install -r requirements.txt
 python comprehensive_model_registry.py
 ```
-Key file: `src/services/gemmaService.ts` (REST → `gemma-4-12b-it:generateContent`)
+Key file: `src/services/gemmaService.ts` (REST → `gemma-4-26b-a4b-it:generateContent`)
 
 ## 02 — Dracarys 3D (`../G2`)
 **Story:** Words → 3D ML world
@@ -21,7 +21,7 @@ cd ../G2
 cp ../GALACTIC-ML/.env.example .env
 npm install && npm run dev -- --port 3001
 ```
-Key file: `services/gemmaService.ts` (`MODEL_NAME='gemma-4-12b-it'`)
+Key file: `services/gemmaService.ts` (`MODEL_NAME='gemma-4-26b-a4b-it'`)
 Try: "Transformer", "K-Means", "SVM"
 
 ## 03 — NOVA-7 Learn (`../G3`)
@@ -31,7 +31,7 @@ cd ../G3
 cp ../GALACTIC-ML/.env.example .env
 npm install && npm run dev -- --port 3002
 ```
-Key file: `constants.ts` (`GEMMA_MODEL="gemma-4-12b-it"`) + `services/gemmaService.ts`
+Key file: `constants.ts` (`GEMMA_MODEL="gemma-4-26b-a4b-it"`) + `services/gemmaService.ts`
 Try: "Search GAN", "Search XGBoost"
 
 ## 04 — Interview Architect (`../G4`)
@@ -41,7 +41,7 @@ cd ../G4
 cp ../GALACTIC-ML/.env.example .env
 npm install && npm run dev -- --port 3003
 ```
-Key file: `services/gemmaService.ts` (`gemma-4-12b-it`, 16K tokens, streaming)
+Key file: `services/gemmaService.ts` (`gemma-4-26b-a4b-it`, 16K tokens, streaming)
 Try: "Machine Learning", "System Design"
 
 ## Ports (suggested for simultaneous demo)

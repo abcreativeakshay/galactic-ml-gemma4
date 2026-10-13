@@ -14,8 +14,8 @@ export default defineConfig(({ mode }) => {
         'process.env.API_KEY': JSON.stringify(env.GEMMA_API_KEY || env.GEMINI_API_KEY),
         'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMMA_API_KEY || env.GEMINI_API_KEY),
         'process.env.GEMMA_API_KEY': JSON.stringify(env.GEMMA_API_KEY || env.GEMINI_API_KEY),
-        'process.env.GEMMA_MODEL': JSON.stringify(env.GEMMA_MODEL || env.GEMINI_MODEL || 'gemma-4-12b-it'),
-        'process.env.GEMINI_MODEL': JSON.stringify(env.GEMMA_MODEL || env.GEMINI_MODEL || 'gemma-4-12b-it')
+        'process.env.GEMMA_MODEL': JSON.stringify(env.GEMMA_MODEL || env.GEMINI_MODEL || 'gemma-4-26b-a4b-it'),
+        'process.env.GEMINI_MODEL': JSON.stringify(env.GEMMA_MODEL || env.GEMINI_MODEL || 'gemma-4-26b-a4b-it')
       },
       resolve: {
         alias: {

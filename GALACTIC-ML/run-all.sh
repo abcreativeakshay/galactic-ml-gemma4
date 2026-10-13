@@ -3,7 +3,7 @@
 # Usage: bash GALACTIC-ML/run-all.sh
 set -e
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-echo "🌌 GALACTIC ML — starting all 4 (model: ${GEMMA_MODEL:-gemma-4-12b-it})"
+echo "🌌 GALACTIC ML — starting all 4 (model: ${GEMMA_MODEL:-gemma-4-26b-a4b-it})"
 
 check_env() {
   if [ ! -f "$1/.env" ]; then

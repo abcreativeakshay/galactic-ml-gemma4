@@ -944,7 +944,7 @@ function App() {
             <Brain className="w-6 h-6 text-cyan-400/50" />
             <span className="text-xl font-black text-white tracking-tight">GALACTIC<span className="text-cyan-400">ML</span></span>
           </div>
-          <p className="text-gray-500 text-xs uppercase tracking-[0.2em] font-bold">Powered by Gemma 4 (gemma-4-12b-it) • Built with React</p>
+          <p className="text-gray-500 text-xs uppercase tracking-[0.2em] font-bold">Powered by Gemma 4 (gemma-4-26b-a4b-it) • Built with React</p>
         </footer>
       </div>
     </div>

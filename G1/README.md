@@ -134,11 +134,12 @@ The application uses Supabase to track all generated notebooks:
 - Download as `.ipynb` for Jupyter
 - Download as `.py` for Python scripts
 - Generated notebooks are production-ready
-
 ## API Keys and Configuration
 
-The application uses the following API key (already configured):
-- **Gemini API Key**: `***REMOVED***`
+Set your own key in `G1/.env` (old hardcoded key was revoked by Google):
+
+- **Gemma API Key**: `VITE_GEMMA_API_KEY=...` from https://aistudio.google.com/
+- **Model**: `VITE_GEMMA_MODEL=gemma-4-26b-a4b-it` (API-supported; 12b is HF/local-only)
 
 Supabase configuration is loaded from environment variables:
 - `VITE_SUPABASE_URL`

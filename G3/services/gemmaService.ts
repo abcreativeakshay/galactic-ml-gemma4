@@ -12,7 +12,7 @@ const apiKey =
 const ai = new GoogleGenAI({ apiKey: apiKey as string });
 
 // Canonical Gemma 4 model
-const ACTIVE_MODEL = process.env.GEMMA_MODEL || MODEL_NAME || GEMMA_MODEL || 'gemma-4-12b-it';
+const ACTIVE_MODEL = process.env.GEMMA_MODEL || MODEL_NAME || GEMMA_MODEL || 'gemma-4-26b-a4b-it';
 
 export const generateResponse = async (
   prompt: string, 

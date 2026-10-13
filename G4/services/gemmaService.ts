@@ -4,14 +4,14 @@ import { SYSTEM_PROMPT } from "../constants";
 
 // ============================================================
 // NOVA-7 Interview Architect — Gemma 4 Edition
-// Model: gemma-4-12b-it (256K context — ideal for 100-Q streams)
+// Model: gemma-4-26b-a4b-it (256K context — ideal for 100-Q streams)
 // Alt for max reasoning: gemma-4-26b-a4b-it / gemma-4-31b-it
 // ============================================================
 declare const process: any;
 export const GEMMA_MODEL =
   process.env.GEMMA_MODEL ||
   process.env.GEMINI_MODEL ||
-  "gemma-4-12b-it";
+  "gemma-4-26b-a4b-it";
 
 // Backwards compat
 export const MODEL_NAME = GEMMA_MODEL;

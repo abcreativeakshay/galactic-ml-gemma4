@@ -1,9 +1,10 @@
 // ============================================================
 // GALACTIC ML — Central Gemma 4 config (G3: NOVA-7 Learn)
-// Canonical: gemma-4-12b-it (Unified, 256K, multimodal, Apache 2.0)
-// Alternatives: gemma-4-31b-it / gemma-4-26b-a4b-it / gemma-4-e4b-it
+// Default: gemma-4-26b-a4b-it (MoE, 256K — SUPPORTED on Gemini API)
+// API supports ONLY 26b-a4b + 31b. 12b is HF/local-only (404 on API).
+// Alt: gemma-4-31b-it (dense, max quality)
 // ============================================================
-export const GEMMA_MODEL = "gemma-4-12b-it";
+export const GEMMA_MODEL = "gemma-4-26b-a4b-it";
 
 // Backwards compat
 export const MODEL_NAME = GEMMA_MODEL;

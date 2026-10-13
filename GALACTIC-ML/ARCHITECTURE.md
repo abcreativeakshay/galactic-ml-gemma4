@@ -1,7 +1,7 @@
 # 🏗️ GALACTIC ML — Architecture
 
 ## One-liner
-4 React+Vite SPAs + 1 Python registry, all calling **one Gemma 4 model** (`gemma-4-12b-it`) via `@google/genai` / REST.
+4 React+Vite SPAs + 1 Python registry, all calling **one Gemma 4 model** (`gemma-4-26b-a4b-it`) via `@google/genai` / REST.
 
 ## System Diagram
 
@@ -50,7 +50,7 @@ graph TD
 - Frontend: React 18/19 + TS + Vite + Tailwind + Lucide
 - 3D: Three.js / R3F (G2)
 - Charts: Recharts, KaTeX, react-markdown (G3/G4)
-- AI: `@google/genai` ^1.33 / ^1.38, model `gemma-4-12b-it`
+- AI: `@google/genai` ^1.33 / ^1.38, model `gemma-4-26b-a4b-it`
 - Python: sklearn, xgboost, lightgbm, catboost (G1 registry)
 - DB: Supabase (G1 only)
 

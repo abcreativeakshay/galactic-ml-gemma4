@@ -1,17 +1,17 @@
 """
 GALACTIC ML — Single source of truth for Gemma 4 (Python)
-Canonical: gemma-4-12b-it
+Canonical: gemma-4-26b-a4b-it
 """
 import os
 
-GEMMA_MODEL = os.getenv("GEMMA_MODEL") or os.getenv("GEMINI_MODEL") or "gemma-4-12b-it"
+GEMMA_MODEL = os.getenv("GEMMA_MODEL") or os.getenv("GEMINI_MODEL") or "gemma-4-26b-a4b-it"
 GEMMA_API_KEY = os.getenv("GEMMA_API_KEY") or os.getenv("GEMINI_API_KEY") or ""
 
 GEMMA_INFO = {
     "model": GEMMA_MODEL,
     "family": "Gemma 4 (Google DeepMind, Apache 2.0)",
     "context": "256K tokens",
-    "variants": ["gemma-4-e2b-it", "gemma-4-e4b-it", "gemma-4-12b-it", "gemma-4-26b-a4b-it", "gemma-4-31b-it"],
+    "variants": ["gemma-4-26b-a4b-it", "gemma-4-31b-it", "gemma-4-31b-it"],
     "api_url": f"https://generativelanguage.googleapis.com/v1beta/models/{GEMMA_MODEL}:generateContent",
 }
 

@@ -1,6 +1,6 @@
 // ============================================================
 // GALACTIC ML — Gemma 4 Service (G2: Dracarys 3D Studio)
-// Canonical model: gemma-4-12b-it (256K context, multimodal)
+// Canonical model: gemma-4-26b-a4b-it (256K context, multimodal)
 // Supports env override: GEMMA_MODEL / GEMINI_MODEL / API_KEY
 // ============================================================
 
@@ -21,7 +21,7 @@ const ai = new GoogleGenAI({ apiKey: apiKey as string });
 export const GEMMA_MODEL =
   process.env.GEMMA_MODEL ||
   process.env.GEMINI_MODEL ||
-  'gemma-4-12b-it';
+  'gemma-4-26b-a4b-it';
 
 // Backwards compat: old code used MODEL_NAME / gemini-2.5-flash
 export const MODEL_NAME = GEMMA_MODEL;
