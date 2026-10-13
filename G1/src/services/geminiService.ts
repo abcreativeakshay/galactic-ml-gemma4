@@ -11,26 +11,26 @@
 // ============================================================
 
 export const GEMMA_MODEL =
-  (import.meta as any)?.env?.VITE_GEMMA_MODEL ||
-  (import.meta as any)?.env?.VITE_GEMINI_MODEL ||
+  import.meta.env.VITE_GEMMA_MODEL ||
+  import.meta.env.VITE_GEMINI_MODEL ||
   'gemma-4-26b-a4b-it';
 
 // OpenRouter model mapping — use PAID ids (":free" shared pool is rate-limited upstream).
 // https://openrouter.ai/google/gemma-4-26b-a4b-it
 function toOpenRouterModel(gemmaModel: string): string {
-  const override = (import.meta as any)?.env?.VITE_OPENROUTER_MODEL;
+  const override = import.meta.env.VITE_OPENROUTER_MODEL;
   if (override) return override;
   if (gemmaModel.includes('31b')) return 'google/gemma-4-31b-it';
   return 'google/gemma-4-26b-a4b-it';
 }
 
 const GEMMA_API_KEY =
-  (import.meta as any)?.env?.VITE_GEMMA_API_KEY ||
-  (import.meta as any)?.env?.VITE_GEMINI_API_KEY ||
+  import.meta.env.VITE_GEMMA_API_KEY ||
+  import.meta.env.VITE_GEMINI_API_KEY ||
   '';
 
 const OPENROUTER_API_KEY =
-  (import.meta as any)?.env?.VITE_OPENROUTER_API_KEY ||
+  import.meta.env.VITE_OPENROUTER_API_KEY ||
   '';
 
 // NOTE: old hardcoded Google key was revoked (403 leaked). Set keys in G1/.env.
