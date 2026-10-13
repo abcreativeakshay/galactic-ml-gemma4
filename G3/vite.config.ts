@@ -15,7 +15,9 @@ export default defineConfig(({ mode }) => {
         'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMMA_API_KEY || env.GEMINI_API_KEY),
         'process.env.GEMMA_API_KEY': JSON.stringify(env.GEMMA_API_KEY || env.GEMINI_API_KEY),
         'process.env.GEMMA_MODEL': JSON.stringify(env.GEMMA_MODEL || env.GEMINI_MODEL || 'gemma-4-26b-a4b-it'),
-        'process.env.GEMINI_MODEL': JSON.stringify(env.GEMMA_MODEL || env.GEMINI_MODEL || 'gemma-4-26b-a4b-it')
+        'process.env.GEMINI_MODEL': JSON.stringify(env.GEMMA_MODEL || env.GEMINI_MODEL || 'gemma-4-26b-a4b-it'),
+        'process.env.OPENROUTER_API_KEY': JSON.stringify(env.OPENROUTER_API_KEY || env.VITE_OPENROUTER_API_KEY),
+        'process.env.OPENROUTER_MODEL': JSON.stringify(env.OPENROUTER_MODEL || 'google/gemma-4-26b-a4b-it')
       },
       resolve: {
         alias: {
