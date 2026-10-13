@@ -5,7 +5,9 @@
 // API supports ONLY: gemma-4-26b-a4b-it, gemma-4-31b-it
 //  - gemma-4-12b-it is HF/local-only (404 on Gemini API) — do NOT use as default
 //  - gemma-4-31b-it (dense, max quality, API-supported alt)
-// Via Gemini API (generativelanguage.googleapis.com) — needs fresh key.
+// Primary: OpenRouter (paid Gemma, bypasses Google per-project 429) if VITE_OPENROUTER_API_KEY set.
+// Fallback: Google generativelanguage.googleapis.com with VITE_GEMMA_API_KEY.
+// Keys ONLY from .env — never hardcoded/committed.
 // ============================================================
 
 export const GEMMA_MODEL =
@@ -13,13 +15,25 @@ export const GEMMA_MODEL =
   (import.meta as any)?.env?.VITE_GEMINI_MODEL ||
   'gemma-4-26b-a4b-it';
 
+// OpenRouter model mapping — use PAID ids (":free" shared pool is rate-limited upstream).
+// https://openrouter.ai/google/gemma-4-26b-a4b-it
+function toOpenRouterModel(gemmaModel: string): string {
+  const override = (import.meta as any)?.env?.VITE_OPENROUTER_MODEL;
+  if (override) return override;
+  if (gemmaModel.includes('31b')) return 'google/gemma-4-31b-it';
+  return 'google/gemma-4-26b-a4b-it';
+}
+
 const GEMMA_API_KEY =
   (import.meta as any)?.env?.VITE_GEMMA_API_KEY ||
   (import.meta as any)?.env?.VITE_GEMINI_API_KEY ||
   '';
 
-// NOTE: old hardcoded key AIzaSyAcK2... was revoked by Google (403 leaked).
-// Set VITE_GEMMA_API_KEY in G1/.env from https://aistudio.google.com/
+const OPENROUTER_API_KEY =
+  (import.meta as any)?.env?.VITE_OPENROUTER_API_KEY ||
+  '';
+
+// NOTE: old hardcoded Google key was revoked (403 leaked). Set keys in G1/.env.
 
 const GEMMA_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMMA_MODEL}:generateContent`;
 
@@ -34,9 +48,13 @@ interface GemmaResponse {
 }
 
 async function callGemma(prompt: string): Promise<string> {
+  // Prefer OpenRouter (works despite Google project 429) when key present.
+  if (OPENROUTER_API_KEY) {
+    return callGemmaViaOpenRouter(prompt);
+  }
   if (!GEMMA_API_KEY) {
     throw new Error(
-      `Missing VITE_GEMMA_API_KEY. Create G1/.env with VITE_GEMMA_API_KEY=... from https://aistudio.google.com/ (model=${GEMMA_MODEL})`
+      `Missing VITE_OPENROUTER_API_KEY and VITE_GEMMA_API_KEY. Create G1/.env with VITE_OPENROUTER_API_KEY=sk-or-... (recommended, OpenRouter paid Gemma) or VITE_GEMMA_API_KEY=AIza... from https://aistudio.google.com/ (model=${GEMMA_MODEL})`
     );
   }
   const response = await fetch(`${GEMMA_API_URL}?key=${GEMMA_API_KEY}`, {
@@ -66,6 +84,36 @@ async function callGemma(prompt: string): Promise<string> {
 
   const data: GemmaResponse = await response.json();
   return data.candidates[0]?.content?.parts[0]?.text || '';
+}
+
+async function callGemmaViaOpenRouter(prompt: string): Promise<string> {
+  const model = toOpenRouterModel(GEMMA_MODEL);
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': 'http://localhost:5173',
+      'X-Title': 'GalacticML-G1-Notebook-Forge',
+    },
+    body: JSON.stringify({
+      model,
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.7,
+      max_tokens: 8192,
+    }),
+  });
+
+  if (!response.ok) {
+    let body = '';
+    try { body = await response.text(); } catch { /* ignore */ }
+    throw new Error(`Gemma 4 via OpenRouter error ${response.status} ${response.statusText} (model=${model}) :: ${body.slice(0, 500)}`);
+  }
+
+  const data: any = await response.json();
+  const text = data?.choices?.[0]?.message?.content;
+  if (typeof text === 'string' && text.trim()) return text;
+  throw new Error(`Gemma 4 via OpenRouter empty response (model=${model})`);
 }
 
 export async function generateTheoryContent(modelName: string, context: string): Promise<string> {
