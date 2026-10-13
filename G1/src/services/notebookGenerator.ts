@@ -379,22 +379,28 @@ export async function generateNotebook(config: NotebookConfig): Promise<any> {
     ]));
   }
 
-  const tuningTheory = await generateTheoryContent('Hyperparameter Tuning', config.problemType);
+  const [tuningTheory, cheatSheet] = await Promise.all([
+    generateTheoryContent('Hyperparameter Tuning', config.problemType),
+    generateCheatSheet('Hyperparameter Tuning Strategies'),
+  ]);
   cells.push(createMarkdownCell([
     '## 🎛️ 7. Theory: Hyperparameter Tuning\n',
     '\n',
     tuningTheory + '\n'
   ]));
 
-  const cheatSheet = await generateCheatSheet('Hyperparameter Tuning Strategies');
   cells.push(createMarkdownCell([
     '## 📋 Hyperparameter Tuning Cheat Sheet\n',
     '\n',
     cheatSheet + '\n'
   ]));
 
-  for (const model of config.selectedModels) {
-    const modelTheory = await generateTheoryContent(model, config.problemType);
+  const modelTheories = await Promise.all(
+    config.selectedModels.map((model) => generateTheoryContent(model, config.problemType))
+  );
+  for (let i = 0; i < config.selectedModels.length; i++) {
+    const model = config.selectedModels[i];
+    const modelTheory = modelTheories[i];
     cells.push(createMarkdownCell([
       `## 🤖 Theory: ${model}\n`,
       '\n',

@@ -47,10 +47,10 @@ interface GemmaResponse {
   }>;
 }
 
-async function callGemma(prompt: string): Promise<string> {
+async function callGemma(prompt: string, maxTokens = 2000): Promise<string> {
   // Prefer OpenRouter (works despite Google project 429) when key present.
   if (OPENROUTER_API_KEY) {
-    return callGemmaViaOpenRouter(prompt);
+    return callGemmaViaOpenRouter(prompt, maxTokens);
   }
   if (!GEMMA_API_KEY) {
     throw new Error(
@@ -70,7 +70,7 @@ async function callGemma(prompt: string): Promise<string> {
       }],
       generationConfig: {
         temperature: 0.7,
-        maxOutputTokens: 8192,
+        maxOutputTokens: maxTokens,
       }
     })
   });
@@ -86,7 +86,7 @@ async function callGemma(prompt: string): Promise<string> {
   return data.candidates[0]?.content?.parts[0]?.text || '';
 }
 
-async function callGemmaViaOpenRouter(prompt: string): Promise<string> {
+async function callGemmaViaOpenRouter(prompt: string, maxTokens = 8192): Promise<string> {
   const model = toOpenRouterModel(GEMMA_MODEL);
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
@@ -100,7 +100,7 @@ async function callGemmaViaOpenRouter(prompt: string): Promise<string> {
       model,
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.7,
-      max_tokens: 8192,
+      max_tokens: maxTokens,
     }),
   });
 
@@ -118,7 +118,7 @@ async function callGemmaViaOpenRouter(prompt: string): Promise<string> {
 
 export async function generateTheoryContent(modelName: string, context: string): Promise<string> {
   const prompt = `You are powered by Gemma 4 (${GEMMA_MODEL}), Google DeepMind open model.
-Generate a comprehensive theory section for the ${modelName} machine learning model. Include:
+Generate a concise theory section (under 350 words) for the ${modelName} machine learning model. Include:
 
 1. **Mathematical Foundation**: Core equations and principles
 2. **Algorithm Explanation**: How the model works step-by-step
@@ -133,7 +133,7 @@ Context: ${context}
 Format the response in clear markdown with tables where appropriate. Be concise but comprehensive.`;
 
   try {
-    const text = await callGemma(prompt);
+    const text = await callGemma(prompt, 1800);
     return text || 'Theory generation failed';
   } catch (error) {
     console.error('Error generating theory with Gemma 4:', error);
@@ -143,7 +143,7 @@ Format the response in clear markdown with tables where appropriate. Be concise 
 
 export async function generateCheatSheet(category: string): Promise<string> {
   const prompt = `You are powered by Gemma 4 (${GEMMA_MODEL}).
-Create a comprehensive cheat sheet table for ${category} in machine learning.
+Create a concise cheat sheet table (under 300 words) for ${category} in machine learning.
 
 Include:
 - Technique names
@@ -155,7 +155,7 @@ Include:
 Format as a markdown table that is easy to read and reference.`;
 
   try {
-    const text = await callGemma(prompt);
+    const text = await callGemma(prompt, 1500);
     return text || 'Cheat sheet generation failed';
   } catch (error) {
     console.error('Error generating cheat sheet with Gemma 4:', error);
@@ -185,7 +185,7 @@ Respond in JSON format:
 }`;
 
   try {
-    const text = await callGemma(prompt);
+    const text = await callGemma(prompt, 800);
 
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
