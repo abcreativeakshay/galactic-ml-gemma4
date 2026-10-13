@@ -38,3 +38,7 @@ venv/
 # Logs / temp
 *.log
 *.tmp
+
+# Wrangler / Cloudflare
+.wrangler/
+**/.wrangler/

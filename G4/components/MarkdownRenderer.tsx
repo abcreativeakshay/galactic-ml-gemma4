@@ -42,7 +42,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, onC
           ol: ({node, ...props}) => <ol className="list-decimal list-inside ml-4 space-y-2 mb-6 font-mono text-sm" {...props} />,
           li: ({node, ...props}) => (
             <li className="flex gap-3 items-start font-serif text-[15px]" style={{ fontFamily: "'Courier Prime', monospace" }}>
-               <span className="text-orange-500 font-bold shrink-0 mt-1">>></span>
+                <span className="text-orange-500 font-bold shrink-0 mt-1">{">>"}</span>
                <span className="block">{props.children}</span>
             </li>
           ),
